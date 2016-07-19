@@ -144,8 +144,8 @@
                     var ddOption = ddList.find("a");
                     if(item.value) ddOption.append($("<input>").addClass("dd-option-value").attr("type", "hidden").val(item.value));
                     if(item.imageSrc) ddOption.append($("<img>").attr("src", item.imageSrc).addClass("dd-option-image" + (options.imagePosition === "right" ? " dd-image-right" : "")));
-                    if(item.text) ddOption.append($("<label>").addClass("dd-option-text").text(item.text));
-                    if(item.description) ddOption.append($("<small>").addClass("dd-option-description dd-desc").text(item.description));
+                    if(item.text) ddOption.append($("<label>").addClass("dd-option-text").html(item.text));
+                    if(item.description) ddOption.append($("<small>").addClass("dd-option-description dd-desc").html(item.description));
                     ddOptions.append(ddList);
                 });
 
@@ -282,12 +282,12 @@
         if (settings.showSelectedHTML) {
             var ddSelectedData = $("<div>");
             if(selectedData.imageSrc) ddSelectedData.append($("<img>").addClass("dd-selected-image" + (settings.imagePosition === "right" ? " dd-image-right" : "")).attr("src", selectedData.imageSrc));
-            if(selectedData.text) ddSelectedData.append($("<label>").addClass("dd-selected-text").text(selectedData.text));
-            if(selectedData.description) ddSelectedData.append($("<small>").addClass("dd-selected-description dd-desc" + (settings.truncateDescription ? " dd-selected-description-truncated" : "")).text(selectedData.description));
+            if(selectedData.text) ddSelectedData.append($("<label>").addClass("dd-selected-text").html(selectedData.text));
+            if(selectedData.description) ddSelectedData.append($("<small>").addClass("dd-selected-description dd-desc" + (settings.truncateDescription ? " dd-selected-description-truncated" : "")).html(selectedData.description));
             ddSelected.html(ddSelectedData.html());
         }
         //Else only display text as selection
-        else ddSelected.html(selectedData.text);
+        else ddSelected.html(selectedData.html);
 
         //Updating selected option value
         ddSelectedValue.val(selectedData.value);
