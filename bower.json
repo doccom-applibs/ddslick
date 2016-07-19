@@ -7,7 +7,7 @@
     "Oier Izulain <oizulain@gmail.com> (https://github.com/oizulain)"
   ],
   "description": "A free light weight jQuery plugin that allows you to create a custom drop down with images and description.",
-  "main": "src/ddslick.js",
+  "main": "src/jquery.ddslick.js",
   "moduleType": [],
   "license": "MPL-2.0",
   "ignore": [
