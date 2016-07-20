@@ -29,16 +29,16 @@
         data: [],
         keepJSONItemsOnTop: false,
         animationTime: 50,
-        width: 260,
+        width: null,
         height: null,
-        background: "#eee",
+        background: "#fff",
         selectText: "",
         defaultSelectedIndex: null,
         truncateDescription: true,
         imagePosition: "left",
         showSelectedHTML: true,
         clickOffToClose: true,
-        embedCSS: true,
+        embedCSS: false,
         onSelected: function() { }
     };
 
@@ -91,12 +91,14 @@
                 //Get data from HTML select options
                 obj.find("option").each(function() {
                     var $this = $(this), thisData = $this.data();
+                    
                     ddSelect.push({
                         text: $.trim($this.text()),
                         value: $this.val(),
                         selected: $this.is(":selected"),
                         description: thisData.description,
-                        imageSrc: thisData.imagesrc //keep it lowercase for HTML5 data-attributes
+                        imageSrc: thisData.imagesrc, //keep it lowercase for HTML5 data-attributes,
+                        borderLeft: thisData.borderLeft
                     });
                 });
 
@@ -129,9 +131,14 @@
                 ddSelect = obj.find(".dd-select");
 
                 //Set widths
-                ddOptions.css({ width: options.width });
-                ddSelect.css({ width: options.width, background: options.background });
-                obj.css({ width: options.width });
+                if (options.width) ddOptions.css({ width: options.width });
+                if (options.width) {
+                    ddSelect.css({ width: options.width, background: options.background });
+                } else {
+                    ddSelect.css({background: options.background });
+                }
+                
+                if (options.width) obj.css({ width: options.width });
 
                 //Set height
                 if (options.height !== null)
@@ -139,8 +146,9 @@
 
                 //Add ddOptions to the container. Replace with template engine later.
                 $.each(options.data, function (index, item) {
+                   
                     if (item.selected) options.defaultSelectedIndex = index;
-                    var ddList = $("<li>").append($("<a>").addClass("dd-option"));
+                    var ddList = $("<li>").append($("<a style='border-left:3px solid #" + item.borderLeft + "'>").addClass("dd-option"));
                     var ddOption = ddList.find("a");
                     if(item.value) ddOption.append($("<input>").addClass("dd-option-value").attr("type", "hidden").val(item.value));
                     if(item.imageSrc) ddOption.append($("<img>").attr("src", item.imageSrc).addClass("dd-option-image" + (options.imagePosition === "right" ? " dd-image-right" : "")));
