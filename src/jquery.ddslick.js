@@ -39,6 +39,7 @@
         showSelectedHTML: true,
         clickOffToClose: true,
         embedCSS: false,
+        customContainerClass: "", //Added a custom class to append to .dd-container
         onSelected: function() { }
     };
 
@@ -91,14 +92,15 @@
                 //Get data from HTML select options
                 obj.find("option").each(function() {
                     var $this = $(this), thisData = $this.data();
-                    
+                   
                     ddSelect.push({
                         text: $.trim($this.text()),
                         value: $this.val(),
                         selected: $this.is(":selected"),
                         description: thisData.description,
                         imageSrc: thisData.imagesrc, //keep it lowercase for HTML5 data-attributes,
-                        borderLeft: thisData.borderLeft
+                        borderLeft: thisData.borderLeft,
+                        originalData: thisData
                     });
                 });
 
@@ -119,7 +121,7 @@
                 $.extend(settingsMap[settingsId], options);
 
                 //Add classes and append ddSelectHtml & ddOptionsHtml to the container
-                obj.addClass("dd-container").append(ddSelectHtml).append(ddOptionsHtml);
+               obj.addClass("dd-container " + options.customContainerClass).append(ddSelectHtml).append(ddOptionsHtml);
 
                 // Inherit name attribute from original element
                 obj.find("input.dd-selected-value")
@@ -149,12 +151,14 @@
                    
                     if (item.selected) options.defaultSelectedIndex = index;
                     var ddList = $("<li>").append($("<a style='border-left:3px solid #" + item.borderLeft + "'>").addClass("dd-option"));
-                    var ddOption = ddList.find("a");
-                    if(item.value) ddOption.append($("<input>").addClass("dd-option-value").attr("type", "hidden").val(item.value));
+                    var ddOption = ddList.find("a"); 
+
+                    ddOption.data('originaData', item.originalData);
                     if(item.imageSrc) ddOption.append($("<img>").attr("src", item.imageSrc).addClass("dd-option-image" + (options.imagePosition === "right" ? " dd-image-right" : "")));
                     if(item.text) ddOption.append($("<label>").addClass("dd-option-text").html(item.text));
                     if(item.description) ddOption.append($("<small>").addClass("dd-option-description dd-desc").html(item.description));
                     ddOptions.append(ddList);
+                   
                 });
 
                 //Save plugin data.
@@ -167,6 +171,8 @@
                 };
 
                 obj.data("ddslick", pluginData);
+                obj.css({border:'2px'});
+                console.log(JSON.stringify(pluginData));
 
                 //Check if needs to show the select text, otherwise show selected or default selection
                 if (options.selectText.length > 0 && options.defaultSelectedIndex === null) {
