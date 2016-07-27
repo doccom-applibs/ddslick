@@ -12,7 +12,7 @@
     }
 
 }(function ($) {
-
+ 
     $.fn.ddslick = function (method) {
         if (methods[method]) {
             return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
@@ -39,8 +39,9 @@
         showSelectedHTML: true,
         clickOffToClose: true,
         embedCSS: false,
-        customContainerClass: "", //Added a custom class to append to .dd-container
-        onSelected: function() { }
+        customContainerClass: "", //Added a custom class option to append to .dd-container
+        onSelected: function() { },
+        onOpened: $.noop  //Added a custom onOpened callback, empty $.noop function
     };
 
     var closeListenerInitialized = false;
@@ -121,7 +122,7 @@
                 $.extend(settingsMap[settingsId], options);
 
                 //Add classes and append ddSelectHtml & ddOptionsHtml to the container
-               obj.addClass("dd-container " + options.customContainerClass).append(ddSelectHtml).append(ddOptionsHtml);
+                obj.addClass("dd-container " + options.customContainerClass).append(ddSelectHtml).append(ddOptionsHtml);
 
                 // Inherit name attribute from original element
                 obj.find("input.dd-selected-value")
@@ -226,14 +227,23 @@
     };
 
     //Public method to open drop down
-    methods.open = function() {
+    methods.open = function () {
         return this.each(function() {
             var $this = $(this),
                 pluginData = $this.data("ddslick");
 
             //Check if plugin is initialized
             if (pluginData)
-                open($this);
+            
+                //Callback function on open
+                if (typeof settings.onOpened == "function") {
+                    //Callback function on open
+                    if (typeof settings.onOpened == "function") {
+                        settings.onOpened.call(this, pluginData);
+                    }
+                }
+           
+            open($this);
         });
     };
 
@@ -300,7 +310,7 @@
             if(selectedData.description) ddSelectedData.append($("<small>").addClass("dd-selected-description dd-desc" + (settings.truncateDescription ? " dd-selected-description-truncated" : "")).html(selectedData.description));
             ddSelected.html(ddSelectedData.html());
         }
-        //Else only display text as selection
+            //Else only display text as selection
         else ddSelected.html(selectedData.html);
 
         //Updating selected option value
@@ -331,7 +341,9 @@
             wasOpen = ddOptions.is(":visible"),
             settings = settingsMap[obj.attr("data-settings-id")];
 
-        //Close all open options (multiple plugins) on the page
+        var pluginData = $(".dd-container").data("ddslick");
+
+       //Close all open options (multiple plugins) on the page
         $(".dd-click-off-close").not(ddOptions).slideUp(settings.animationTime);
         $(".dd-pointer").removeClass("dd-pointer-up");
         $this.removeClass("dd-open");
@@ -342,6 +354,13 @@
             $this.removeClass("dd-open");
         }
         else {
+
+            //Callback function on open
+            if (typeof settings.onOpened == "function") {
+                settings.onOpened.call(this, pluginData);
+            }
+            
+
             $this.addClass("dd-open");
             ddOptions.slideDown(settings.animationTime);
             ddPointer.addClass("dd-pointer-up");
