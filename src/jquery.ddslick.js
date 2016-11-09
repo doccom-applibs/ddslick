@@ -173,7 +173,6 @@
 
                 obj.data("ddslick", pluginData);
                 obj.css({border:'2px'});
-                console.log(JSON.stringify(pluginData));
 
                 //Check if needs to show the select text, otherwise show selected or default selection
                 if (options.selectText.length > 0 && options.defaultSelectedIndex === null) {
